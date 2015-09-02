@@ -11,6 +11,7 @@ ADD spring-music.war /usr/local/tomcat/webapps/ROOT/
 ADD server.xml /usr/local/tomcat/conf/
 ADD start-tomcat.sh /usr/local/tomcat/bin/
 RUN cd /usr/local/tomcat/webapps/ROOT && jar -xvf spring-music.war && rm -rf spring-music.war
-RUN useradd vcap
-RUN chown -R vcap /usr/local/tomcat
-CMD ["/usr/local/tomcat/bin/start-tomcat.sh"]
+#RUN adduser --disabled-password --gecos "" vcap
+#RUN chown -R vcap /usr/local/tomcat
+RUN chmod -R og+rw /usr/local/tomcat
+ENTRYPOINT ["/usr/local/tomcat/bin/start-tomcat.sh"]
