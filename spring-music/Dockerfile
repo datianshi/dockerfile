@@ -5,10 +5,12 @@ ENV TOMCAT_HOME /usr/local/tomcat
 RUN apt-get update
 RUN apt-get install -y openjdk-7-jdk
 RUN rm -rf /usr/local/tomcat/webapps/*
+RUN rm -rf /usr/local/tomcat/conf/server.xml
 RUN mkdir /usr/local/tomcat/webapps/ROOT
-RUN ls -lrta
-RUN curl -o /usr/local/tomcat/webapps/ROOT/spring-music.war https://s3.amazonaws.com/spring-music/spring-music.war
+ADD spring-music.war /usr/local/tomcat/webapps/ROOT/
+ADD server.xml /usr/local/tomcat/conf/
+ADD start-tomcat.sh /usr/local/tomcat/bin/
 RUN cd /usr/local/tomcat/webapps/ROOT && jar -xvf spring-music.war && rm -rf spring-music.war
-#RUN curl -o /usr/local/spring-music.war https://s3.amazonaws.com/spring-music/spring-music.war
-EXPOSE 8080
-CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
+RUN useradd vcap
+RUN chown -R vcap /usr/local/tomcat
+CMD ["/usr/local/tomcat/bin/start-tomcat.sh"]
