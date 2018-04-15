@@ -1,17 +1,9 @@
-FROM     tomcat:8.0
+FROM     ubuntu:16.04
 MAINTAINER Shaozhen Ding "dsz0111@gmail.com"
 
-ENV TOMCAT_HOME /usr/local/tomcat
 RUN apt-get update
-RUN apt-get install -y openjdk-7-jdk
-RUN rm -rf /usr/local/tomcat/webapps/*
-RUN rm -rf /usr/local/tomcat/conf/server.xml
-RUN mkdir /usr/local/tomcat/webapps/ROOT
-ADD spring-music.war /usr/local/tomcat/webapps/ROOT/
-ADD server.xml /usr/local/tomcat/conf/
-ADD start-tomcat.sh /usr/local/tomcat/bin/
-RUN cd /usr/local/tomcat/webapps/ROOT && jar -xvf spring-music.war && rm -rf spring-music.war
-#RUN adduser --disabled-password --gecos "" vcap
-#RUN chown -R vcap /usr/local/tomcat
-RUN chmod -R og+rw /usr/local/tomcat
-ENTRYPOINT ["/usr/local/tomcat/bin/start-tomcat.sh"]
+RUN apt-get install -y openjdk-8-jdk
+ADD spring-music.jar ./
+ADD start-music.sh ./
+ENV SPRING_PROFILES_ACTIVE in-memory
+ENTRYPOINT ["./start-music.sh"]
